@@ -45,7 +45,7 @@ This needs to be automated so that the infrastructure can be discarded as soon a
 One of the output exports of the **CloudFormation script** should be the public URL of the **LoadBalancer. Bonus points** if you add **http://** in front of the load balancer **DNS Name** in the output, for convenience.
 
 # Architecture 
-![Architecture](./architecure.jpeg)
+![Architecture](/architecure.jpeg)
 
 # Deployment
 
