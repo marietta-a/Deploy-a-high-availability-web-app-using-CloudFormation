@@ -44,6 +44,9 @@ This needs to be automated so that the infrastructure can be discarded as soon a
 4. The application needs to be deployed into private subnets with a **Load Balancer** located in a public subnet.
 One of the output exports of the **CloudFormation script** should be the public URL of the **LoadBalancer. Bonus points** if you add **http://** in front of the load balancer **DNS Name** in the output, for convenience.
 
+# Architecture 
+![Architecture](architecure.jpeg "architecture")
+
 # Deployment
 
 1. 
