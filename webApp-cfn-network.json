@@ -1,0 +1,26 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "CfnUdacityProject2"
+    },
+    {
+        "ParameterKey": "VpcCidr",
+        "ParameterValue": "10.0.0.0/16"
+    },
+    {
+        "ParameterKey": "PRIV1Cidr",
+        "ParameterValue": "10.0.1.0/24"
+    },
+    {
+        "ParameterKey": "PRIV2Cidr",
+        "ParameterValue": "10.0.2.0/24"
+    },
+    {
+        "ParameterKey": "PUB1Cidr",
+        "ParameterValue": "10.0.3.0/24"
+    },
+    {
+        "ParameterKey": "PUB2Cidr",
+        "ParameterValue": "10.0.4.0/24"
+    }
+]
