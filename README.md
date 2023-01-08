@@ -56,3 +56,11 @@ One of the output exports of the **CloudFormation script** should be the public 
 
 ![sample deployment script](https://raw.githubusercontent.com/marietta-a/Deploy-a-high-availability-web-app-using-CloudFormation/main/screenshots/01.%20deploymentScript.png)
 
+![sample deployed stack](https://raw.githubusercontent.com/marietta-a/Deploy-a-high-availability-web-app-using-CloudFormation/main/screenshots/02.%20deployedStack.jpg)
+
+### Load Balancer DNS
+![Load Balancer DNS](https://raw.githubusercontent.com/marietta-a/Deploy-a-high-availability-web-app-using-CloudFormation/main/screenshots/loadbalancerDns.png)
+
+### Bastion Host 
+![Bastion Host](https://raw.githubusercontent.com/marietta-a/Deploy-a-high-availability-web-app-using-CloudFormation/main/screenshots/bastionHost.png)
+
