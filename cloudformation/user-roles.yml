@@ -28,7 +28,9 @@ Resources:
                 Action: 
                   - s3:Get*
                   - s3:List*
-                Resource: arn:aws:s3:::*
+                Resource: 
+                  - arn:aws:s3:::udacity-cfn-bucket
+                  - arn:aws:s3:::udacity-cfn-bucket/*
                 
   InstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
