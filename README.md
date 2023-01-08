@@ -49,4 +49,10 @@ One of the output exports of the **CloudFormation script** should be the public 
 
 # Deployment
 
-1. 
+1. cd into cloudformation directory
+2. run ``./create.sh stackName cfn-network.yml cfn-network.json`` upon creation of the stack
+3. run ``./create.sh stackName user-roles.yml user-roles.json`` upon creation,
+4. run ``./create.sh stackName cfn-servers.yml cfn-servers.json``
+
+[sample deployment script](https://raw.githubusercontent.com/marietta-a/Deploy-a-high-availability-web-app-using-CloudFormation/main/screenshots/01.%20deploymentScript.png)
+
