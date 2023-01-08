@@ -32,7 +32,7 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: !Ref VpcCidr
-      EnableDnsSupport: true
+      EnableDnsHostnames: true
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-VPC
@@ -77,7 +77,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       AvailabilityZone: !Select [0,  !GetAZs ]
-      MapPublicIpOnLaunch: false
+      MapPublicIpOnLaunch: true
       CidrBlock: !Ref PUB1Cidr
       Tags:
         - Key: Name
@@ -88,7 +88,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       AvailabilityZone: !Select [1,  !GetAZs ]
-      MapPublicIpOnLaunch: false
+      MapPublicIpOnLaunch: true
       CidrBlock: !Ref PUB2Cidr
       Tags:
         - Key: Name
@@ -138,7 +138,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-RouteTable1
+          Value: !Sub ${EnvironmentName}-Priv Route Table1
 
   PrivateRouteTable2:
     Type: AWS::EC2::RouteTable
@@ -146,7 +146,16 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-RouteTable2
+          Value: !Sub ${EnvironmentName}-Priv Route Table2
+          
+
+  PublicRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties: 
+          VpcId: !Ref VPC
+          Tags: 
+              - Key: Name 
+                Value: !Sub ${EnvironmentName}-Public Route Table
 
   PrivateRouteTable1Association:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -159,6 +168,18 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateRouteTable2
       SubnetId: !Ref PrivateSubnet2
+
+  Public1RouteTable1Association:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+          RouteTableId: !Ref PublicRouteTable
+          SubnetId: !Ref PublicSubnet1
+
+  Public1RouteTable2Association:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+          RouteTableId: !Ref PublicRouteTable
+          SubnetId: !Ref PublicSubnet2
         
   NAT1Route:
     DependsOn: NATGateway1
@@ -175,6 +196,14 @@ Resources:
         RouteTableId: !Ref PrivateRouteTable2
         DestinationCidrBlock: '0.0.0.0/0'
         NatGatewayId: !Ref NATGateway2
+
+  DefaultPublicRoute: 
+      Type: AWS::EC2::Route
+      DependsOn: IGWAttachment
+      Properties: 
+          RouteTableId: !Ref PublicRouteTable
+          DestinationCidrBlock: 0.0.0.0/0
+          GatewayId: !Ref IGW
 
 
 

@@ -6,7 +6,7 @@ Description: >
 Resources:
   
 
-  S3ReadWriteRole:
+  S3ReadOnlyRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -20,15 +20,14 @@ Resources:
               - 'sts:AssumeRole'
       Path: /
       Policies:
-        - PolicyName: S3ReadWritePolicy
+        - PolicyName: S3ReadOnlyAccess
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action: 
-                 - s3:PutObject
-                 - s3:GetObject
-                 - s3:ListBucket
+                  - s3:Get*
+                  - s3:List*
                 Resource: arn:aws:s3:::*
                 
   InstanceProfile:
@@ -36,7 +35,7 @@ Resources:
     Properties:
       Path: /
       Roles:
-        - !Ref S3ReadWriteRole
+        - !Ref S3ReadOnlyRole
 
 Outputs:
   IAMProfileInstance:

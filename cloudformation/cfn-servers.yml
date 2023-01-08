@@ -12,6 +12,12 @@ Parameters:
     Description: Instance image
     Type: String
 
+  InstanceType:
+      Description: 
+          "The EC2 instance type"
+      Type: String
+      AllowedValues: [t2.micro, t2.medium, t3.small, t3.nano, t3.micro, t3.small]
+
 
 
 Resources:
@@ -19,8 +25,26 @@ Resources:
   BastionHostSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Security group for NAT Gateway1
+      GroupDescription: allow ssh from our local
       GroupName: Bastion Host SG
+      VpcId:
+        Fn::ImportValue: !Sub ${EnvironmentName}-VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+
+  WebServerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: allow http to our host and ssh from our local
+      GroupName: Web server SG
       VpcId:
         Fn::ImportValue: !Sub ${EnvironmentName}-VPC
       SecurityGroupIngress:
@@ -34,32 +58,14 @@ Resources:
           CidrIp: 0.0.0.0/0
       SecurityGroupEgress:
         - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-
-  WebServerSG:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Security group for NAT Gateway 2
-      GroupName: Web server SG
-      VpcId:
-        Fn::ImportValue: !Sub ${EnvironmentName}-VPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
+          FromPort: 0
+          ToPort: 65535
           CidrIp: 0.0.0.0/0
 
   LoadBalancerSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Security group for NAT Gateway 2
+      GroupDescription: allow http to our load balancer
       GroupName: Load balancer SG
       VpcId:
         Fn::ImportValue: !Sub ${EnvironmentName}-VPC
@@ -84,7 +90,7 @@ Resources:
       HealthyThresholdCount: 2
       Port: 80
       Protocol: HTTP
-      UnhealthyThresholdCount: 5
+      UnhealthyThresholdCount: 6
       VpcId: 
         Fn::ImportValue: !Sub "${EnvironmentName}-VPC"
 
@@ -92,7 +98,8 @@ Resources:
     Type: AWS::EC2::Instance
     Properties: 
       ImageId: !Ref ImageId
-      KeyName: BastionHost
+      InstanceType: !Ref InstanceType
+      IamInstanceProfile: !ImportValue InstanceProfile
       NetworkInterfaces: 
         - AssociatePublicIpAddress: true
           DeviceIndex: "0"
@@ -105,7 +112,7 @@ Resources:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId: ami-00ddb0e5626798373
-      InstanceType: t2.micro
+      InstanceType: !Ref InstanceType
       UserData: 
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -141,6 +148,8 @@ Resources:
       Subnets: 
       - Fn::ImportValue: !Sub ${EnvironmentName}-PUB1
       - Fn::ImportValue: !Sub ${EnvironmentName}-PUB2
+      SecurityGroups:
+        - !Ref LoadBalancerSG
       
   Listener:
     Type: AWS::ElasticLoadBalancingV2::Listener
